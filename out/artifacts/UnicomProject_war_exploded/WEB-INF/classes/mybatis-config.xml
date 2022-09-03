@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+    <!--添加日志，这样在日志输出处可以看到sql执行的结果-->
+    <!--    <settings>-->
+    <!--        <setting name="logImpl" value="STDOUT_LOGGING"/>-->
+    <!--    </settings>-->
+    <!--关联的实体类-->
+    <typeAliases>
+        <package name="com.pojo"/>
+    </typeAliases>
+
+    <!--mapper和mapper.xml所在路径-->
+    <mappers>
+        <mapper class="com.dao.NetworkMapper" />
+        <mapper class="com.dao.ResidenceMapper"/>
+        <mapper class="com.dao.UserMapper"/>
+
+    </mappers>
+</configuration>

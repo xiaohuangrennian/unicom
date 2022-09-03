@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--通过namespace指定该xml文件对应的mapper-->
+<mapper namespace="com.dao.UserMapper">
+    <insert id="addUser" parameterType="UserPo">
+        insert into unicom.user(id,username,psd,authority)
+        values (#{id},#{username},#{psd},#{authority});
+    </insert>
+
+    <delete id="deleteUser" parameterType="int">
+        delete from unicom.user where id=#{id};
+    </delete>
+
+    <update id="updateUser" parameterType="UserPo">
+        update  unicom.user
+        set username=#{username},psd=#{psd}
+        where id=#{id};
+    </update>
+
+    <update id="updateUserAuthority" parameterType="int">
+        update unicom.user
+        set authority=#{authority}
+        where id=#{id};
+    </update>
+
+    <select id="selectById" resultType="UserPo">
+        select * from unicom.user where id=#{id};
+    </select>
+
+    <select id="selectAll" resultType="UserPo">
+        select * from unicom.user;
+    </select>
+
+</mapper>

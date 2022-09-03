@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--通过namespace指定该xml文件对应的mapper-->
+<mapper namespace="com.dao.ResidenceMapper">
+    <insert id="add" parameterType="ResidencePo">
+        insert into unicom.residence(province,city,region,street,name,wkt,year)
+        values(#{province},#{city},#{region},#{street},#{name},#{wkt},#{year});
+    </insert>
+
+    <delete id="deleteResidence" parameterType="ResidencePo">
+        delete from unicom.residence
+        where provice=#{province} and city=#{city} and region=#{region} and street=#{street} and name=#{name};
+    </delete>
+
+    <update id="update" parameterType="ResidencePo">
+        update unicom.residence
+        set province = #{province},city=#{city},region=#{region},street=#{street},name=#{name},wkt=#{wkt},year=#{year}
+        where provice=#{province} and city=#{city} and region=#{region} and street=#{street} and name=#{name};
+    </update>
+
+    <select id="select" resultType="ResidencePo">
+        select * from unicom.residence
+        where provice=#{province} and city=#{city} and region=#{region} and street=#{street} and name=#{name};
+    </select>
+
+    <select id="selectAll" resultType="ResidencePo">
+        select * from unicom.residence;
+    </select>
+
+    <select id="getWktById" resultType="String">
+        select wkt from unicom.residence
+        where provice=#{province} and city=#{city} and region=#{region} and street=#{street} and name=#{name};
+    </select>
+</mapper>

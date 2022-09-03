@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--通过namespace指定该xml文件对应的mapper-->
+<mapper namespace="com.dao.NetworkMapper">
+    <insert id="add" parameterType="NetworkPo">
+        insert into unicom.network(id,province,city,region,street,wkt,year)
+        values(#{id},#{province},#{city},#{region},#{street},#{wkt},#{year});
+    </insert>
+
+    <delete id="deleteNetworkById" parameterType="int">
+        delete from unicom.network where id = #{id};
+    </delete>
+
+    <update id="update" parameterType="NetworkPo">
+        update unicom.network
+        set province = #{province},city=#{city},region=#{region},street=#{street},wkt=#{wkt},year=#{year}
+        where id=#{id};
+    </update>
+
+    <select id="selectById" resultType="NetworkPo">
+        select * from unicom.network where id=#{id};
+    </select>
+
+    <select id="selectAll" resultType="NetworkPo">
+        select * from unicom.network;
+    </select>
+
+    <select id="getWktById" resultType="String">
+        select wkt from unicom.network where id=#{id};
+    </select>
+
+
+</mapper>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+    <!--一、spring的配置文件，用于连接数据库，和整合mybatis既是整合DAO层-->
+
+    <!-- 1.关联数据库的配置文件database.properties-->
+    <context:property-placeholder location="classpath:database.properties"/>
+
+    <!-- 2.配置数据库连接和c3p0连接池-->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <!-- 配置数据库连接，使用到数据库配置文件中的东西 -->
+        <property name="driverClass" value="${jdbc.driven}"/>
+        <property name="jdbcUrl" value="${jdbc.url}"/>
+        <property name="user" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+
+        <!-- 连接池的一些操作，如最大最小连接数等 -->
+        <!--最大最小连接数-->
+        <property name="maxPoolSize" value="30"/>
+        <property name="minPoolSize" value="10"/>
+        <!-- 关闭连接后不自动commit -->
+        <property name="autoCommitOnClose" value="false"/>
+        <!-- 获取连接超时时间 -->
+        <property name="checkoutTimeout" value="10000"/>
+        <!-- 当获取链接失败后重试的次数 -->
+        <property name="acquireRetryAttempts" value="2"/>
+    </bean>
+
+    <!-- 配置sqlSessionFactory ,这是能自动创建sqlSession，用于数据库的操作-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--配置数据源-->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 绑定mybatis的配置文件-->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+    </bean>
+
+    <!--配置dao接口扫描包，动态实现dao接口注入spring容器中 扫描的作用是：扫描注解，使得spring容器可以自动装配bean-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- 注入sqlSessionFactory,就是上面的哪个bean-->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <!-- 要扫描的包所在地-->
+        <property name="basePackage" value="com.dao"/>
+    </bean>
+
+    <!-- 二、spring整合service层 -->
+    <!-- 1.开启扫描 -->
+    <context:component-scan base-package="com.service"/>
+    <!-- 2.通过注解(在类前加上注解:@service)或者配置的方式，将service中的类注入spring 容器-->
+    <bean  id="networkServiceImpl" class="com.service.NetworkPoServiceImpl">
+        <!--bean中的properties表示的是在该类中的一个属性，所有在我们的com.service.BookServiceImpl中，必须有bookMapper属性,
+         ref的是dao层中于此相关的接口类，该接口必须使用@Repository注解，表明这是一个bean-->
+        <property name="networkMapper" ref="networkMapper"/>
+    </bean>
+    <bean id="residenceServiceImpl" class="com.service.ResidenceServiceImpl">
+        <property name="residenceMapper" ref="residenceMapper"/>
+    </bean>
+    <bean id="userServiceImpl" class="com.service.UserServiceImpl">
+        <property name="userMapper" ref="userMapper"/>
+    </bean>
+
+
+    <!--声明事务配置-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!--配置数据源-->
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+
+    <!-- 三、spring整合spring MVC ，即controller层 -->
+    <import resource="classpath:springmvc-servlet.xml"/>
+
+</beans>
